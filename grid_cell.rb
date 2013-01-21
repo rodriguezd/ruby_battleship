@@ -2,13 +2,7 @@ class Grid_Cell
 
 	attr_accessor :row, :column, :status
 
-
-
-
-	def initialize(status = :open)
-		@status = status
-
-		@FILL_CHAR = {:open => '+',
+@@FILL_CHAR = {:open => '+',
 				 :hit => 'X',
 				 :miss => '0',
 				 :carrier => 'C',
@@ -16,11 +10,14 @@ class Grid_Cell
 				 :destroyer => 'D',
 				 :submarine => 'S',
 				 :patrol => 'P'}
+
+
+	def initialize(status = :open)
+		@status = status
 	end
 
 	def to_s
-
-		@FILL_CHAR[@status]
+		@@FILL_CHAR[@status]
 	end
 
 	def hit

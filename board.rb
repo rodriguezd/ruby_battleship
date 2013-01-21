@@ -1,4 +1,5 @@
 require './grid_cell'
+require './ship'
 
 class Board
 
@@ -22,12 +23,55 @@ class Board
 			i += 1
 		end
 	end
+
+	def valid_coordintes?(ship, start_position, orientation)
+		if orientation == :horizontal
+			# puts "row length: " + (start_position[:column] + ship.length).to_s
+			(start_position[:column] + ship.length) < 10
+		else
+			# puts "column length: " + (start_position[:row] + ship.length).to_s
+			(start_position[:row] + ship.length) < 10
+		end
+	end
+
+	def check_clearance? (ship, start_position, orientation)
+		clear = false
+		length = ship.length
+		row = start_position[:row]
+		column = start_position[:column]
+		length.times do
+			if self.grid[row][column].status != :open
+				return false
+			elsif orientation == :horizontal
+				column += 1
+			else
+				row += 1
+			end
+		end
+		true
+	end
+
+	def place_ship (ship, start_position, orientation)
+
+
+	end
 end
 
 if __FILE__ == $0
-a = Board.new
-a.grid[2][1] = 'Z'
-a.to_s
-puts a.grid[2][1]
-puts a.grid[3][1]
+	s = Ship.new(:player, :carrier)
+	a = Board.new
+	a.grid[5][9].hit
+	a.to_s
+	if a.valid_coordintes?(s, {:row => 4, :column => 4}, :horizontal)
+		puts "VC: True"
+		if a.check_clearance?(s, {:row => 4, :column => 4}, :horizontal)
+		puts "CC: True"
+		else
+		puts "CC: False"
+		end
+	else
+		puts "VC: False"
+	end
+
+
 end
