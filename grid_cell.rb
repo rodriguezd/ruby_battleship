@@ -1,16 +1,15 @@
 class Grid_Cell
 
-	attr_accessor :row, :column, :status
+	attr_accessor :ship, :status
 
 @@FILL_CHAR = {:open => '+',
-				 :hit => 'X',
-				 :miss => '0',
-				 :carrier => 'C',
-				 :battleship => 'B',
-				 :destroyer => 'D',
-				 :submarine => 'S',
-				 :patrol => 'P'}
-
+			   :hit => 'X',
+			   :miss => '0',
+			   :carrier => 'C',
+			   :battleship => 'B',
+			   :destroyer => 'D',
+			   :submarine => 'S',
+			   :patrol => 'P'}
 
 	def initialize(status = :open)
 		@status = status

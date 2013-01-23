@@ -5,7 +5,7 @@ class Board
 
 	attr_accessor :grid
 
-	def initialize
+	def initialize(player)
 		@grid = Array.new(10).map! {Array.new(10).map! {Grid_Cell.new}}
 	end
 
@@ -24,7 +24,7 @@ class Board
 		end
 	end
 
-	def valid_coordintes?(ship, start_position, orientation)
+	def valid_coordinates?(ship, start_position, orientation)
 		if orientation == :horizontal
 			# puts "row length: " + (start_position[:column] + ship.length).to_s
 			(start_position[:column] + ship.length) < 10
@@ -51,27 +51,26 @@ class Board
 		true
 	end
 
-	def place_ship (ship, start_position, orientation)
-
-
+	def hit_miss (cell)
+		if @grid[cell[:row], cell[:column]].status == :open
+		   return :miss
+		 elsif @grid[cell[:row], cell[:column]].status == :hit ||
+		 	   @grid[cell[:row], cell[:column]].status == :miss
+		 	   return :called
+		 else
+		 	@grid[cell[:row], cell[:column]].status = :hit
+		 	return :hit
+		 end
 	end
+
 end
 
 if __FILE__ == $0
-	s = Ship.new(:player, :carrier)
+	s = Ship.new(:player, :patrol)
 	a = Board.new
-	a.grid[5][9].hit
 	a.to_s
-	if a.valid_coordintes?(s, {:row => 4, :column => 4}, :horizontal)
-		puts "VC: True"
-		if a.check_clearance?(s, {:row => 4, :column => 4}, :horizontal)
-		puts "CC: True"
-		else
-		puts "CC: False"
-		end
-	else
-		puts "VC: False"
-	end
+	s.place_ship(a, {:row => 3, :column => 0}, :horizontal)
+	a.to_s
 
 
 end
