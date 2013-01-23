@@ -14,11 +14,11 @@ class Game
 	def play
 		puts "Let's play some Battleship!\n"
 		set_player
-		place_carrier(@player)
-		# place_battleship(@player)
-		# place_destroyer(@player)
-		# place_submarine(@player)
-		# place_patrol(@player)
+		deploy_ship(@player, @player.carrier)
+		deploy_ship(@player, @player.battleship)
+		deploy_ship(@player, @player.destroyer)
+		deploy_ship(@player, @player.submarine)
+		deploy_ship(@player, @player.patrol)
 		# play_rounds(@player)
 	end
 
@@ -28,12 +28,12 @@ class Game
 		@player = Player.new(name)
 	end
 
-	def place_carrier(player)
+	def deploy_ship(player, ship)
 		valid = false
 		while valid == false do
 			position = {}
 			while valid == false do
-				print "Carrier orientation: horizaontal(H) or vertical(V)? "
+				print "#{ship.type.capitalize} orientation: horizaontal(H) or vertical(V)? "
 				input = gets.chomp.rstrip.upcase
 				if input == 'H'
 					orientation = :horizontal
@@ -48,7 +48,7 @@ class Game
 
 			valid = false
 			while valid == false do
-				print "Carrier starting position: "
+				print "#{ship.type.capitalize} starting position: "
 				input = gets.chomp.rstrip.upcase
 				position[:row] = Board::ROW.rindex(input.split(//, 2)[0])
 				position[:column] = Board::COLUMN.rindex(input.split(//, 2)[1])
@@ -60,30 +60,14 @@ class Game
 			end
 
 			valid = false
-			if player.board.valid_coordinates?(:carrier, position, orientation) && player.board.check_clearance?(:carrier, position, orientation)
-				player.carrier.place_ship(player.board, position, orientation)
+			if player.board.valid_coordinates?(ship.type, position, orientation) && player.board.check_clearance?(ship.type, position, orientation)
+				ship.place_ship(player.board, position, orientation)
 				valid = true
 				@player.board.to_s
 			else
 				puts "Invalid position for ship."
 			end
 		end
-	end
-
-	def place_battleship(player, start_position, orientation)
-
-	end
-
-	def place_destroyer(player)
-
-	end
-
-	def place_submarine(player)
-
-	end
-
-	def place_patrol(player)
-
 	end
 
 end

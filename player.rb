@@ -4,7 +4,7 @@ require './ship'
 class Player
 
 	attr_accessor :name, :board, :ships_left
-	attr_reader :carrier
+	attr_reader :carrier, :battleship, :destroyer, :submarine, :patrol
 
 	def initialize(name)
 		@name = name
