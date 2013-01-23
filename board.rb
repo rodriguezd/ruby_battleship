@@ -5,7 +5,10 @@ class Board
 
 	attr_accessor :grid
 
-	def initialize(player)
+	ROW = ['A','B','C','D','E','F','G','H','I','J']
+	COLUMN = ['1','2','3','4','5','6','7','8','9','10']
+
+	def initialize
 		@grid = Array.new(10).map! {Array.new(10).map! {Grid_Cell.new}}
 	end
 
@@ -27,16 +30,15 @@ class Board
 	def valid_coordinates?(ship, start_position, orientation)
 		if orientation == :horizontal
 			# puts "row length: " + (start_position[:column] + ship.length).to_s
-			(start_position[:column] + ship.length) < 10
+			(start_position[:column] + Ship::LENGTH[ship]) <= 10
 		else
 			# puts "column length: " + (start_position[:row] + ship.length).to_s
-			(start_position[:row] + ship.length) < 10
+			(start_position[:row] + Ship::LENGTH[ship]) <= 10
 		end
 	end
 
-	def check_clearance? (ship, start_position, orientation)
-		clear = false
-		length = ship.length
+	def check_clearance?(ship, start_position, orientation)
+		length = Ship::LENGTH[ship]
 		row = start_position[:row]
 		column = start_position[:column]
 		length.times do
@@ -48,10 +50,10 @@ class Board
 				row += 1
 			end
 		end
-		true
+		return true
 	end
 
-	def hit_miss (cell)
+	def hit_miss(cell)
 		if @grid[cell[:row], cell[:column]].status == :open
 		   return :miss
 		 elsif @grid[cell[:row], cell[:column]].status == :hit ||

@@ -1,16 +1,16 @@
 class Ship
 
-	@@LENGTH = {:carrier => 5,
-			    :battleship => 4,
-			    :destroyer => 3,
-			    :submarine => 3,
-			    :patrol => 2}
+	LENGTH = {:carrier => 5,
+			      :battleship => 4,
+			      :destroyer => 3,
+			      :submarine => 3,
+			      :patrol => 2}
 
 	attr_accessor :type, :length, :hits
 
 	def initialize(type)
 		@type = type
-		@length = @@LENGTH[type]
+		@length = LENGTH[type]
 		@hits = 0
 	end
 

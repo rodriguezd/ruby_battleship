@@ -1,6 +1,10 @@
+require './board'
+require './ship'
+
 class Player
 
-	attr_accessor :name, :ships_left
+	attr_accessor :name, :board, :ships_left
+	attr_reader :carrier
 
 	def initialize(name)
 		@name = name
