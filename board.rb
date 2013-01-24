@@ -29,10 +29,8 @@ class Board
 
 	def valid_coordinates?(ship, start_position, orientation)
 		if orientation == :horizontal
-			# puts "row length: " + (start_position[:column] + ship.length).to_s
 			(start_position[:column] + Ship::LENGTH[ship]) <= 10
 		else
-			# puts "column length: " + (start_position[:row] + ship.length).to_s
 			(start_position[:row] + Ship::LENGTH[ship]) <= 10
 		end
 	end
