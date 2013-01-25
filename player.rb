@@ -1,5 +1,5 @@
-require './board'
-require './ship'
+require_relative 'board'
+require_relative 'ship'
 
 class Player
 
@@ -22,8 +22,32 @@ class Player
 		@name
 	end
 
+	def print_boards
+		puts "      SHIP STATUS                   SHOTS TAKEN"
+		puts "  1 2 3 4 5 6 7 8 9 10          1 2 3 4 5 6 7 8 9 10"
+		row_letter = ('A'..'Z').to_a
+		row_number = 0
+		@board.grid.each do |row1|
+			print row_letter[row_number] + ' '
+			row1.each {|cell| print cell.to_s + ' '}
+			print "        "
+			# @target_board.grid.each do |row2|
+				print row_letter[row_number] + ' '
+				@target_board.grid[row_number].each {|cell| print cell.to_s + ' '}
+			# end
+			print "\n"
+			row_number += 1
+		end
+	end
+
 	def take_shot
 
 	end
 
 end
+
+if __FILE__ == $0
+	p = Player.new('David')
+	p.print_boards
+end
+

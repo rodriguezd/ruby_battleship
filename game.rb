@@ -1,21 +1,23 @@
-require './player'
-require './board'
+require_relative 'player'
+require_relative 'board'
 
 class Game
 
 	attr_accessor :player, :opponent
+	attr_reader :opp_targeting_queue
 
 	def play
-		puts "Let's play some Battleship!\n"
+		puts "\nLet's play some Battleship!\n\n"
 		set_player
 		set_opponent
+		puts "\nNow place your ships, #{@player.name}."
 		deploy_ship(@player, @player.carrier)
 		deploy_ship(@player, @player.battleship)
 		deploy_ship(@player, @player.destroyer)
 		deploy_ship(@player, @player.submarine)
 		deploy_ship(@player, @player.patrol)
 		deploy_opp_ships
-		# play_rounds(@player)
+		play_rounds
 	end
 
 	def set_player
@@ -26,14 +28,23 @@ class Game
 
 	def set_opponent
 		@opponent = Player.new('Opponent')
+		@opp_targeting_queue = []
+		Board::ROW.each do |row|
+			Board::COLUMN.each do |column|
+				@opp_targeting_queue << [row, column]
+			end
+		end
+		@opp_targeting_queue.shuffle!
 	end
 
 	def deploy_ship(player, ship)
 		valid = false
 		while valid == false do
+			print "\n"
+			player.board.to_s			#printing board
 			position = {}
 			while valid == false do
-				print "#{ship.type.capitalize} orientation: horizaontal(H) or vertical(V)? "
+				print "\n#{ship.type.capitalize} orientation: horizaontal(H) or vertical(V)? "
 				input = gets.chomp.rstrip.upcase
 				if input == 'H'
 					orientation = :horizontal
@@ -48,7 +59,7 @@ class Game
 
 			valid = false
 			while valid == false do
-				print "#{ship.type.capitalize} starting position: "
+				print "\n#{ship.type.capitalize} starting position: "
 				input = gets.chomp.rstrip.upcase
 				position[:row] = Board::ROW.rindex(input.split(//, 2)[0])
 				position[:column] = Board::COLUMN.rindex(input.split(//, 2)[1])
@@ -64,7 +75,8 @@ class Game
 				 player.board.check_clearance?(ship.type, position, orientation)
 					ship.place_ship(player.board, position, orientation)
 					valid = true
-					player.board.to_s
+					# print "\n"
+					# player.board.to_s			#printing board
 			else
 				puts "Invalid position for ship."
 			end
@@ -111,22 +123,25 @@ class Game
 	end
 
 	def play_rounds
-		puts "\nTime to sink some ships!"
+		puts "\n\nTime to sink some ships! Good luck, #{@player.name}\n\n"
 		game_over = false
 		while game_over == false
+			@player.print_boards			#print board
 			player_round
 			if @opponent.ships_left == 0
 				winner = @player.name
 				game_over = true
+				next
 			end
-			# opponent_round
-			# if @opponent.ships_left == 0
-			# 	winner = "Opponent"
-			# 	game_over = true
-			# end
+			# @player.print_boards			#print board
+			opponent_round
+			if @player.ships_left == 0
+				winner = "Opponent"
+				game_over = true
+			end
+			# @player.print_boards			#print board
 		end
-		puts "#{winner} wins!"
-		return winner
+		puts "\n\n#{winner} WINS!\n\n"
 	end
 
 	def player_round
@@ -134,7 +149,7 @@ class Game
 		target = {}
 		valid = false
 		while valid == false
-			print "Target coordinates: "
+			print "\nYour turn. Target coordinates: "
 			input = gets.chomp.rstrip.upcase
 			target[:row] = Board::ROW.rindex(input.split(//, 2)[0])
 			target[:column] = Board::COLUMN.rindex(input.split(//, 2)[1])
@@ -146,60 +161,117 @@ class Game
 		end
 
 		if @opponent.board.grid[target[:row]][target[:column]].status == :open
-			puts "Miss!"
+			puts "\n\"MISS!\""
 			@player.target_board.grid[target[:row]][target[:column]].miss
 		else
-			puts "Hit!"
+			puts "\n\"HIT!\""
+			@player.target_board.grid[target[:row]][target[:column]].hit
 			case @opponent.board.grid[target[:row]][target[:column]].status
 				when :carrier
 					@opponent.carrier.hit
 					if @opponent.carrier.sunk?
 						@opponent.ships_left -= 1
-						puts "Opponent carrier sunk! #{@opponent.ships_left} more to go."
+						puts "Opponent's carrier sunk! #{@opponent.ships_left} more ships to go."
 					end
 				when :battleship
 					@opponent.battleship.hit
 					if @opponent.battleship.sunk?
 						@opponent.ships_left -= 1
-						puts "Opponent battleship sunk!  #{@opponent.ships_left} more to go."
+						puts "Opponent's battleship sunk!  #{@opponent.ships_left} more ships to go."
 					end
 				when :destroyer
 					@opponent.destroyer.hit
 					if @opponent.destroyer.sunk?
 						@opponent.ships_left -= 1
-						puts "Opponent destroyer sunk!  #{@opponent.ships_left} more to go."
+						puts "Opponent's destroyer sunk!  #{@opponent.ships_left} more ships to go."
 					end
 				when :submarine
 					@opponent.submarine.hit
 					if @opponent.submarine.sunk?
 						@opponent.ships_left -= 1
-						puts "Opponent submarine sunk!  #{@opponent.ships_left} more to go."
+						puts "Opponent's submarine sunk!  #{@opponent.ships_left} more ships to go."
 					end
 				when :patrol
 					@opponent.patrol.hit
 					if @opponent.patrol.sunk?
 						@opponent.ships_left -= 1
-						puts "Opponent patrol boat sunk!  #{@opponent.ships_left} more to go."
+						puts "Opponent's patrol boat sunk!  #{@opponent.ships_left} more ships to go."
 					end
 			end
-			@player.target_board.grid[target[:row]][target[:column]].hit
-
 		end
-		@player.target_board.to_s
 	end
 
 	def opponent_round
+		puts "\n---------- Opponent's turn ----------"
+		target_coords = opp_targeting_queue.pop
+		target = {}
 
+		target[:row] = Board::ROW.rindex(target_coords[0])
+		target[:column] = Board::COLUMN.rindex(target_coords[1])
+
+		print "\nOpponent called \"#{target_coords[0]} #{target_coords[1]}\" "
+		if @player.board.grid[target[:row]][target[:column]].status == :open
+			puts "- MISS!\n\n"
+		else
+			puts "- HIT!"
+			case @player.board.grid[target[:row]][target[:column]].status
+				when :carrier
+					@player.carrier.hit
+					if @player.carrier.sunk?
+						@player.ships_left -= 1
+						puts "\nYour carrier has been sunk!"
+					else
+						puts "\nYour carrier has been hit!"
+					end
+				when :battleship
+					@player.battleship.hit
+					if @player.battleship.sunk?
+						@player.ships_left -= 1
+						puts "\nYour battleship has been sunk!"
+					else
+						puts "\nYour battleship has been hit!"
+					end
+				when :destroyer
+					@player.destroyer.hit
+
+					if @player.destroyer.sunk?
+						@player.ships_left -= 1
+						puts "\nYour destroyer has been sunk!"
+					else
+						puts "\nYour destroyer has been hit!"
+					end
+				when :submarine
+					@player.submarine.hit
+
+					if @player.submarine.sunk?
+						@player.ships_left -= 1
+						puts "\nYour submarine has been sunk!"
+					else
+						puts "\nYour submarine has been hit!"
+					end
+				when :patrol
+					@player.patrol.hit
+
+					if @player.patrol.sunk?
+						@player.ships_left -= 1
+						puts "\nYour patrol boat has been sunk!"
+					else
+						puts "\nYour patrol boat has been hit!"
+					end
+			end
+			@player.board.grid[target[:row]][target[:column]].hit
+		end
+		puts "-------------------------------------\n\n"
 	end
-
 end
 
 if __FILE__ == $0
 	game = Game.new
-	game.set_player
-	# game.play
-	game.set_opponent
-	game.deploy_opp_ships
-	game.play_rounds
+	# game.opponent_round
+	# game.set_player
+	game.play
+	# game.set_opponent
+	# game.deploy_opp_ships
+	# game.play_rounds
 	# @player.board.to_s
 end

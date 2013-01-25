@@ -1,5 +1,5 @@
-require './grid_cell'
-require './ship'
+require_relative 'grid_cell'
+require_relative 'ship'
 
 class Board
 
@@ -26,6 +26,7 @@ class Board
 			i += 1
 		end
 	end
+
 
 	def valid_coordinates?(ship, start_position, orientation)
 		if orientation == :horizontal
