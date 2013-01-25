@@ -79,6 +79,10 @@ class Ship
 		@length == @hits
 	end
 
+	def hit
+		@hits += 1
+	end
+
 	def to_s
 		"#{@board}'s #{@type}"
 	end
