@@ -5,17 +5,17 @@ class Board
 
 	attr_accessor :grid
 
+	NUM_SHIPS = 5
+	BOARD_DIM = 10
 	ROW = ['A','B','C','D','E','F','G','H','I','J']
 	COLUMN = ['1','2','3','4','5','6','7','8','9','10']
 
 	def initialize
-		@grid = Array.new(10).map! {Array.new(10).map! {Grid_Cell.new}}
+		@grid = Array.new(BOARD_DIM).map! {Array.new(BOARD_DIM).map! {Grid_Cell.new}}
 	end
 
-	# def set_cell(cell, status)
-	# end
-
-	def to_s
+		#print board grid
+		def to_s
 		row_letter = ('A'..'Z').to_a
 		i = 0
 		puts "  1 2 3 4 5 6 7 8 9 10"
@@ -27,15 +27,16 @@ class Board
 		end
 	end
 
-
+	#validate ship placement remains within board
 	def valid_coordinates?(ship, start_position, orientation)
 		if orientation == :horizontal
-			(start_position[:column] + Ship::LENGTH[ship]) <= 10
+			(start_position[:column] + Ship::LENGTH[ship]) <= BOARD_DIM
 		else
-			(start_position[:row] + Ship::LENGTH[ship]) <= 10
+			(start_position[:row] + Ship::LENGTH[ship]) <= BOARD_DIM
 		end
 	end
 
+	#validate ship placement conflicts with another placed ship
 	def check_clearance?(ship, start_position, orientation)
 		length = Ship::LENGTH[ship]
 		row = start_position[:row]
@@ -52,17 +53,18 @@ class Board
 		return true
 	end
 
-	def hit_miss(cell)
-		if @grid[cell[:row], cell[:column]].status == :open
-		   return :miss
-		 elsif @grid[cell[:row], cell[:column]].status == :hit ||
-		 	   @grid[cell[:row], cell[:column]].status == :miss
-		 	   return :called
-		 else
-		 	@grid[cell[:row], cell[:column]].status = :hit
-		 	return :hit
-		 end
-	end
+	# method currently not used
+	# def hit_or_miss(cell)
+	# 	if @grid[cell[:row], cell[:column]].status == :open
+	# 	   return :miss
+	# 	 elsif @grid[cell[:row], cell[:column]].status == :hit ||
+	# 	 	   @grid[cell[:row], cell[:column]].status == :miss
+	# 	 	   return :called
+	# 	 else
+	# 	 	@grid[cell[:row], cell[:column]].status = :hit
+	# 	 	return :hit
+	# 	 end
+	# end
 
 end
 
@@ -72,6 +74,4 @@ if __FILE__ == $0
 	a.to_s
 	s.place_ship(a, {:row => 3, :column => 0}, :horizontal)
 	a.to_s
-
-
 end

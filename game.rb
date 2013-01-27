@@ -3,7 +3,6 @@ require_relative 'board'
 
 class Game
 
-	attr_accessor :player, :opponent
 	attr_reader :opp_targeting_queue
 
 	def play
@@ -21,9 +20,12 @@ class Game
 	end
 
 	def set_player
-		print "Enter name: "
-		name = gets.chomp.rstrip
-		@player = Player.new(name)
+		name = ''
+		while name.empty? do
+			print "Enter name: "
+			name = gets.chomp.rstrip
+			@player = Player.new(name)
+		end
 	end
 
 	def set_opponent
@@ -34,14 +36,16 @@ class Game
 				@opp_targeting_queue << [row, column]
 			end
 		end
-		@opp_targeting_queue.shuffle!
+		@opp_targeting_queue.shuffle!   #queue of random ooponent shot coordinates
 	end
 
 	def deploy_ship(player, ship)
+
+		#prompt for placement orientation and validate input
 		valid = false
 		while valid == false do
 			print "\n"
-			player.board.to_s			#printing board
+			player.board.to_s			#print board for reference
 			position = {}
 			while valid == false do
 				print "\n#{ship.type.capitalize} orientation: horizaontal(H) or vertical(V)? "
@@ -57,9 +61,10 @@ class Game
 				end
 			end
 
+			#prompt for placement starting position and validate input
 			valid = false
 			while valid == false do
-				print "\n#{ship.type.capitalize} starting position: "
+				print "\n#{ship.type.capitalize} starting position (Ex. A10): "
 				input = gets.chomp.rstrip.upcase
 				position[:row] = Board::ROW.rindex(input.split(//, 2)[0])
 				position[:column] = Board::COLUMN.rindex(input.split(//, 2)[1])
@@ -70,26 +75,25 @@ class Game
 				end
 			end
 
+			#validate board clearances for given orientation and position
 			valid = false
 			if player.board.valid_coordinates?(ship.type, position, orientation) &&
 				 player.board.check_clearance?(ship.type, position, orientation)
 					ship.place_ship(player.board, position, orientation)
 					valid = true
-					# print "\n"
-					# player.board.to_s			#printing board
 			else
 				puts "Invalid position for ship."
 			end
 		end
 	end
 
+	#randomly place opponent's ships
 	def deploy_opp_ships
 		position = {}
 		Ship::LENGTH.keys.each do |ship|
 			valid = false
 			while valid == false
 				orientation = [:horizontal, :vertical].sample
-
 				if orientation == :horizontal
 					rows = Board::ROW
 					columns = Board::COLUMN[0..9 - ship.length]
@@ -119,33 +123,33 @@ class Game
 				end
 			end
 		end
-		@opponent.board.to_s
+		@opponent.board.to_s   #print for testing only
 	end
 
+	#alternate rounds between player and opponent, determine if game won
 	def play_rounds
 		puts "\n\nTime to sink some ships! Good luck, #{@player.name}\n\n"
 		game_over = false
 		while game_over == false
-			@player.print_boards			#print board
+			@player.print_boards
 			player_round
 			if @opponent.ships_left == 0
 				winner = @player.name
 				game_over = true
 				next
 			end
-			# @player.print_boards			#print board
+
 			opponent_round
 			if @player.ships_left == 0
 				winner = "Opponent"
 				game_over = true
 			end
-			# @player.print_boards			#print board
 		end
 		puts "\n\n#{winner} WINS!\n\n"
 	end
 
+	#prompt player for shot coordinates, validate, assess hit or miss
 	def player_round
-
 		target = {}
 		valid = false
 		while valid == false
@@ -201,6 +205,7 @@ class Game
 		end
 	end
 
+	#opponent takes shot from queue, assess hit or miss
 	def opponent_round
 		puts "\n---------- Opponent's turn ----------"
 		target_coords = opp_targeting_queue.pop
@@ -233,7 +238,6 @@ class Game
 					end
 				when :destroyer
 					@player.destroyer.hit
-
 					if @player.destroyer.sunk?
 						@player.ships_left -= 1
 						puts "\nYour destroyer has been sunk!"
@@ -242,7 +246,6 @@ class Game
 					end
 				when :submarine
 					@player.submarine.hit
-
 					if @player.submarine.sunk?
 						@player.ships_left -= 1
 						puts "\nYour submarine has been sunk!"
@@ -251,7 +254,6 @@ class Game
 					end
 				when :patrol
 					@player.patrol.hit
-
 					if @player.patrol.sunk?
 						@player.ships_left -= 1
 						puts "\nYour patrol boat has been sunk!"
@@ -263,6 +265,7 @@ class Game
 		end
 		puts "-------------------------------------\n\n"
 	end
+
 end
 
 if __FILE__ == $0
