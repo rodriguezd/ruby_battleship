@@ -48,12 +48,12 @@ class Game
 			player.board.to_s			#print board for reference
 			position = {}
 			while valid == false do
-				print "\n#{ship.type.capitalize} orientation: horizaontal(H) or vertical(V)? "
+				print "\n#{ship.type.capitalize} orientation: horizontal(H) or vertical(V)? "
 				input = gets.chomp.rstrip.upcase
-				if input == 'H'
+				if input == 'H' || input == 'HORIZONTAL'
 					orientation = :horizontal
 					valid = true
-				elsif input == 'V'
+				elsif input == 'V' || input == 'VERTICAL'
 					orientation = :vertical
 					valid = true
 				else
@@ -123,7 +123,7 @@ class Game
 				end
 			end
 		end
-		@opponent.board.to_s   #print for testing only
+		# @opponent.board.to_s   #print for testing only
 	end
 
 	#alternate rounds between player and opponent, determine if game won
@@ -214,7 +214,7 @@ class Game
 		target[:row] = Board::ROW.rindex(target_coords[0])
 		target[:column] = Board::COLUMN.rindex(target_coords[1])
 
-		print "\nOpponent called \"#{target_coords[0]} #{target_coords[1]}\" "
+		print "\nOpponent called \"#{target_coords[0]}#{target_coords[1]}\" "
 		if @player.board.grid[target[:row]][target[:column]].status == :open
 			puts "- MISS!\n\n"
 		else
