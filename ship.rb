@@ -41,11 +41,3 @@ class Ship
 	end
 
 end
-
-if __FILE__ == $0
-	a = Ship.new(:player, :carrier)
-	puts a
-	puts a.type
-	puts a.length
-	puts a.sunk?
-end

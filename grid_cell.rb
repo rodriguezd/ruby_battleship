@@ -29,13 +29,3 @@ FILL_CHAR = {:open => '+',
 	end
 
 end
-
-if __FILE__ == $0
-	a = Grid_Cell.new
-	b = Grid_Cell.new
-	c = Grid_Cell.new
-	b.hit
-	puts a.status
-	puts b.status
-	puts c.status
-end

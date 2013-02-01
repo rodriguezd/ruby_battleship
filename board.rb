@@ -67,11 +67,3 @@ class Board
 	# end
 
 end
-
-if __FILE__ == $0
-	s = Ship.new(:player, :patrol)
-	a = Board.new
-	a.to_s
-	s.place_ship(a, {:row => 3, :column => 0}, :horizontal)
-	a.to_s
-end

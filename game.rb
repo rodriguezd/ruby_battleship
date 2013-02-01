@@ -267,14 +267,3 @@ class Game
 	end
 
 end
-
-if __FILE__ == $0
-	game = Game.new
-	# game.opponent_round
-	# game.set_player
-	game.play
-	# game.set_opponent
-	# game.deploy_opp_ships
-	# game.play_rounds
-	# @player.board.to_s
-end
