@@ -1,4 +1,4 @@
-class Grid_Cell
+class GridCell
 
 	attr_accessor :status
 
