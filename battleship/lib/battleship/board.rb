@@ -27,6 +27,20 @@ class Board
 			end
 	end
 
+	# def place_ship(board, start_position, orientation)
+	# 	row = start_position[:row]
+	# 	column = start_position[:column]
+	# 	@length.times do
+	# 		if orientation == :horizontal
+	# 			board.grid[row][column].status = @type
+	# 			column += 1
+	# 		else
+	# 			board.grid[row][column].status = @type
+	# 			row += 1
+	# 		end
+	# 	end
+	# end
+
 	#validate ship placement remains within board
 	def valid_coordinates?(ship, start_position, orientation)
 		if orientation == :horizontal
@@ -66,4 +80,9 @@ class Board
 	# 	 end
 	# end
 
+end
+
+if __FILE__ == $0
+	b = Board.new
+	puts b
 end

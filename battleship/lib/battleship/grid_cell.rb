@@ -1,23 +1,23 @@
 class GridCell
 
-	attr_accessor :status
+	attr_accessor :status, :ship
 
-#cell fill characters
-FILL_CHAR = {:open => '+',
-			   		 :hit => 'X',
-			   		 :miss => '0',
-			   		 :carrier => 'C',
-			  		 :battleship => 'B',
-			  		 :destroyer => 'D',
-			  		 :submarine => 'S',
-			  		 :patrol => 'P'}
+	#cell fill characters
+	FILL_CHAR = {:open => '+',
+			   			 :hit => 'X',
+			   			 :miss => '0'}
 
-	def initialize(status = :open)
+	def initialize(status = :open, ship = nil)
 		@status = status
+		@ship = ship
 	end
 
 	def to_s
-		FILL_CHAR[@status]
+		if @ship && @status != :hit
+			@ship.to_s
+		else
+			FILL_CHAR[@status]
+		end
 	end
 
 	def hit
@@ -28,4 +28,11 @@ FILL_CHAR = {:open => '+',
 		@status = :miss
 	end
 
+end
+
+if __FILE__ == $0
+	require_relative 'carrier'
+	s = Carrier.new
+	a = GridCell.new
+	puts a
 end
