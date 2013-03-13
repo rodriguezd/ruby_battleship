@@ -1,5 +1,9 @@
 require_relative 'grid_cell'
-require_relative 'ship'
+require_relative 'carrier'
+require_relative 'battleship'
+require_relative 'destroyer'
+require_relative 'submarine'
+require_relative 'patrol_boat'
 
 class Board
 
@@ -27,19 +31,19 @@ class Board
 			end
 	end
 
-	# def place_ship(board, start_position, orientation)
-	# 	row = start_position[:row]
-	# 	column = start_position[:column]
-	# 	@length.times do
-	# 		if orientation == :horizontal
-	# 			board.grid[row][column].status = @type
-	# 			column += 1
-	# 		else
-	# 			board.grid[row][column].status = @type
-	# 			row += 1
-	# 		end
-	# 	end
-	# end
+	def place_ship(ship, start_position, orientation)
+		row = start_position[:row]
+		column = start_position[:column]
+		ship.length.times do
+			if orientation == :horizontal
+				self.grid[row][column].ship = ship
+				column += 1
+			else
+				self.grid[row][column].ship = ship
+				row += 1
+			end
+		end
+	end
 
 	#validate ship placement remains within board
 	def valid_coordinates?(ship, start_position, orientation)
@@ -83,6 +87,17 @@ class Board
 end
 
 if __FILE__ == $0
-	b = Board.new
-	puts b
+	board = Board.new
+	a = Carrier.new
+	b = Battleship.new
+	c = Destroyer.new
+	d = Submarine.new
+	e = PatrolBoat.new
+
+	board.place_ship(a, {row: 2, column: 4}, :horizontal)
+	board.place_ship(b, {row: 3, column: 4}, :horizontal)
+	board.place_ship(c, {row: 4, column: 4}, :horizontal)
+	board.place_ship(d, {row: 5, column: 4}, :horizontal)
+	board.place_ship(e, {row: 6, column: 4}, :horizontal)
+	puts board
 end
