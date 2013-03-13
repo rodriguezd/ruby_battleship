@@ -10,11 +10,11 @@ class Game
 		set_player
 		set_opponent
 		puts "\nNow place your ships, #{@player.name}."
-		deploy_ship(@player, @player.carrier)
-		deploy_ship(@player, @player.battleship)
-		deploy_ship(@player, @player.destroyer)
-		deploy_ship(@player, @player.submarine)
-		deploy_ship(@player, @player.patrol)
+		deploy_ship(@player, :carrier)
+		deploy_ship(@player, :battleship)
+		deploy_ship(@player, :destroyer)
+		deploy_ship(@player, :submarine)
+		deploy_ship(@player, :patrol_boat)
 		deploy_opp_ships
 		play_rounds
 	end
@@ -48,7 +48,7 @@ class Game
 			player.board.to_s			#print board for reference
 			position = {}
 			while valid == false do
-				print "\n#{ship.type.capitalize} orientation: horizontal(H) or vertical(V)? "
+				print "\n#{ship.capitalize} orientation: horizontal(H) or vertical(V)? "
 				input = gets.chomp.rstrip.upcase
 				if input == 'H' || input == 'HORIZONTAL'
 					orientation = :horizontal
@@ -64,7 +64,7 @@ class Game
 			#prompt for placement starting position and validate input
 			valid = false
 			while valid == false do
-				print "\n#{ship.type.capitalize} starting position (Ex. A10): "
+				print "\n#{ship.capitalize} starting position (Ex. A10): "
 				input = gets.chomp.rstrip.upcase
 				position[:row] = Board::ROW.rindex(input.split(//, 2)[0])
 				position[:column] = Board::COLUMN.rindex(input.split(//, 2)[1])
@@ -77,10 +77,10 @@ class Game
 
 			#validate board clearances for given orientation and position
 			valid = false
-			if player.board.valid_coordinates?(ship.type, position, orientation) &&
-				 player.board.check_clearance?(ship.type, position, orientation)
-					ship.place_ship(player.board, position, orientation)
-					valid = true
+			if player.board.valid_coordinates?(player.send(ship), position, orientation) &&
+				 player.board.check_clearance?(player.send(ship), position, orientation)
+					 player.board.place_ship(player.send(ship), position, orientation)
+					 valid = true
 			else
 				puts "Invalid position for ship."
 			end
@@ -266,4 +266,10 @@ class Game
 		puts "-------------------------------------\n\n"
 	end
 
+end
+
+if __FILE__ == $0
+	g = Game.new
+	p = Player.new('David')
+	g.deploy_ship(p, :carrier)
 end

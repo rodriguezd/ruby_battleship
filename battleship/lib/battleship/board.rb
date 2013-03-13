@@ -93,13 +93,15 @@ if __FILE__ == $0
 	d = Submarine.new
 	e = PatrolBoat.new
 
+	puts a.send(:length)
+
 	# puts board.valid_coordinates?(a, {row: 6, column: 7}, :vertical)
 
-	board.place_ship(a, {row: 2, column: 4}, :vertical)
-	puts board.check_clearance?(b, {row: 2, column: 4}, :horizontal)
+	# board.place_ship(a, {row: 2, column: 4}, :vertical)
+	# puts board.check_clearance?(b, {row: 2, column: 4}, :horizontal)
 	# board.place_ship(b, {row: 3, column: 4}, :horizontal)
 	# board.place_ship(c, {row: 4, column: 4}, :horizontal)
 	# board.place_ship(d, {row: 5, column: 4}, :horizontal)
 	# board.place_ship(e, {row: 6, column: 4}, :horizontal)
-	puts board
+	# puts board
 end

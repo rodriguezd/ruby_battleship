@@ -1,20 +1,25 @@
 require_relative 'board'
-require_relative 'ship'
+require_relative 'carrier'
+require_relative 'battleship'
+require_relative 'destroyer'
+require_relative 'submarine'
+require_relative 'patrol_boat'
 
 class Player
 
 	attr_accessor :name, :ships_left
-	attr_reader :board, :target_board, :carrier, :battleship, :destroyer, :submarine, :patrol
+	attr_reader :board, :target_board, :carrier, :battleship, :destroyer,
+	            :submarine, :patrol_boat
 
 	def initialize(name)
 		@name = name
 		@board = Board.new
 		@target_board = Board.new
-		@carrier = Ship.new(:carrier)
-		@battleship = Ship.new(:battleship)
-		@destroyer = Ship.new(:destroyer)
-		@submarine = Ship.new(:submarine)
-		@patrol = Ship.new(:patrol)
+		@carrier = Carrier.new
+		@battleship = Battleship.new
+		@destroyer = Destroyer.new
+		@submarine = Submarine.new
+		@patrol_boat = PatrolBoat.new
 		@ships_left = Board::NUM_SHIPS
 	end
 
@@ -39,4 +44,9 @@ class Player
 		end
 	end
 
+end
+
+if __FILE__ == $0
+	p = Player.new('David')
+	p.print_boards
 end
