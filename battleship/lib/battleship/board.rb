@@ -48,19 +48,18 @@ class Board
 	#validate ship placement remains within board
 	def valid_coordinates?(ship, start_position, orientation)
 		if orientation == :horizontal
-			(start_position[:column] + Ship::LENGTH[ship]) <= BOARD_DIM
+			(start_position[:column] + ship.length) <= BOARD_DIM
 		else
-			(start_position[:row] + Ship::LENGTH[ship]) <= BOARD_DIM
+			(start_position[:row] + ship.length) <= BOARD_DIM
 		end
 	end
 
 	#validate ship placement conflicts with another placed ship
 	def check_clearance?(ship, start_position, orientation)
-		length = Ship::LENGTH[ship]
 		row = start_position[:row]
 		column = start_position[:column]
-		length.times do
-			if self.grid[row][column].status != :open
+		ship.length.times do
+			if self.grid[row][column].ship
 				return false
 			elsif orientation == :horizontal
 				column += 1
@@ -94,10 +93,13 @@ if __FILE__ == $0
 	d = Submarine.new
 	e = PatrolBoat.new
 
-	board.place_ship(a, {row: 2, column: 4}, :horizontal)
-	board.place_ship(b, {row: 3, column: 4}, :horizontal)
-	board.place_ship(c, {row: 4, column: 4}, :horizontal)
-	board.place_ship(d, {row: 5, column: 4}, :horizontal)
-	board.place_ship(e, {row: 6, column: 4}, :horizontal)
+	# puts board.valid_coordinates?(a, {row: 6, column: 7}, :vertical)
+
+	board.place_ship(a, {row: 2, column: 4}, :vertical)
+	puts board.check_clearance?(b, {row: 2, column: 4}, :horizontal)
+	# board.place_ship(b, {row: 3, column: 4}, :horizontal)
+	# board.place_ship(c, {row: 4, column: 4}, :horizontal)
+	# board.place_ship(d, {row: 5, column: 4}, :horizontal)
+	# board.place_ship(e, {row: 6, column: 4}, :horizontal)
 	puts board
 end
