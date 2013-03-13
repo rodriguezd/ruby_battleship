@@ -15,7 +15,11 @@ class Game
 		deploy_ship(@player, :destroyer)
 		deploy_ship(@player, :submarine)
 		deploy_ship(@player, :patrol_boat)
-		deploy_opp_ships
+		deploy_opp_ship(@opponent, :carrier)
+		deploy_opp_ship(@opponent, :battleship)
+		deploy_opp_ship(@opponent, :destroyer)
+		deploy_opp_ship(@opponent, :submarine)
+		deploy_opp_ship(@opponent, :patrol_boat)
 		play_rounds
 	end
 
@@ -88,42 +92,28 @@ class Game
 	end
 
 	#randomly place opponent's ships
-	def deploy_opp_ships
+	def deploy_opp_ship(opponent, ship)
 		position = {}
-		Ship::LENGTH.keys.each do |ship|
-			valid = false
-			while valid == false
-				orientation = [:horizontal, :vertical].sample
-				if orientation == :horizontal
-					rows = Board::ROW
-					columns = Board::COLUMN[0..9 - ship.length]
-				else
-					rows = Board::ROW[0..9 - ship.length]
-					columns = Board::COLUMN
-				end
+		valid = false
+		while valid == false
+			orientation = [:horizontal, :vertical].sample
+			if orientation == :horizontal
+				rows = Board::ROW
+				columns = Board::COLUMN[0..9 - opponent.send(ship).length]
+			else
+				rows = Board::ROW[0..9 - opponent.send(ship).length]
+				columns = Board::COLUMN
+			end
 
-				position[:row] = Board::ROW.rindex(rows.sample)
-				position[:column] = Board::COLUMN.rindex(columns.sample)
+			position[:row] = Board::ROW.rindex(rows.sample)
+			position[:column] = Board::COLUMN.rindex(columns.sample)
 
-				if @opponent.board.valid_coordinates?(ship, position, orientation) &&
-					 @opponent.board.check_clearance?(ship, position, orientation)
-					 valid = true
-					 case ship
-					 when :carrier
-					 	@opponent.carrier.place_ship(@opponent.board, position, orientation)
-					 when :battleship
-					 	@opponent.battleship.place_ship(@opponent.board, position, orientation)
-					 when :destroyer
-					 	@opponent.destroyer.place_ship(@opponent.board, position, orientation)
-					 when :submarine
-					 	@opponent.submarine.place_ship(@opponent.board, position, orientation)
-					 when :patrol
-					 	@opponent.patrol.place_ship(@opponent.board, position, orientation)
-					 end
-				end
+			if opponent.board.valid_coordinates?(opponent.send(ship), position, orientation) &&
+				 opponent.board.check_clearance?(opponent.send(ship), position, orientation)
+				 valid = true
+				 opponent.board.place_ship(opponent.send(ship), position, orientation)
 			end
 		end
-		# @opponent.board.to_s   #print for testing only
 	end
 
 	#alternate rounds between player and opponent, determine if game won
@@ -270,6 +260,8 @@ end
 
 if __FILE__ == $0
 	g = Game.new
-	p = Player.new('David')
-	g.deploy_ship(p, :carrier)
+	# p = Player.new('David')
+	o = Player.new('Opponent')
+	g.deploy_opp_ship(o, :carrier)
+	puts o.board
 end
