@@ -37,9 +37,11 @@ class Board
 		ship.length.times do
 			if orientation == :horizontal
 				self.grid[row][column].ship = ship
+				self.grid[row][column].status = :occupied
 				column += 1
 			else
 				self.grid[row][column].ship = ship
+				self.grid[row][column].status = :occupied
 				row += 1
 			end
 		end

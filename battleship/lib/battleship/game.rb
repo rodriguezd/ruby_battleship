@@ -5,6 +5,8 @@ class Game
 
 	attr_reader :opp_targeting_queue
 
+	FLEET = [:carrier, :battleship, :destroyer, :submarine, :patrol_boat]
+
 	def play
 		puts "\nLet's play some Battleship!\n\n"
 		set_player
@@ -154,43 +156,22 @@ class Game
 			end
 		end
 
-		if @opponent.board.grid[target[:row]][target[:column]].status == :open
+		player_cell = @player.target_board.grid[target[:row]][target[:column]]
+		opponent_cell = @opponent.board.grid[target[:row]][target[:column]]
+
+
+		if opponent_cell.status == :open
 			puts "\n\"MISS!\""
-			@player.target_board.grid[target[:row]][target[:column]].miss
+			player_cell.miss
 		else
 			puts "\n\"HIT!\""
-			@player.target_board.grid[target[:row]][target[:column]].hit
-			case @opponent.board.grid[target[:row]][target[:column]].status
-				when :carrier
-					@opponent.carrier.hit
-					if @opponent.carrier.sunk?
-						@opponent.ships_left -= 1
-						puts "Opponent's carrier sunk! #{@opponent.ships_left} more ships to go."
-					end
-				when :battleship
-					@opponent.battleship.hit
-					if @opponent.battleship.sunk?
-						@opponent.ships_left -= 1
-						puts "Opponent's battleship sunk!  #{@opponent.ships_left} more ships to go."
-					end
-				when :destroyer
-					@opponent.destroyer.hit
-					if @opponent.destroyer.sunk?
-						@opponent.ships_left -= 1
-						puts "Opponent's destroyer sunk!  #{@opponent.ships_left} more ships to go."
-					end
-				when :submarine
-					@opponent.submarine.hit
-					if @opponent.submarine.sunk?
-						@opponent.ships_left -= 1
-						puts "Opponent's submarine sunk!  #{@opponent.ships_left} more ships to go."
-					end
-				when :patrol
-					@opponent.patrol.hit
-					if @opponent.patrol.sunk?
-						@opponent.ships_left -= 1
-						puts "Opponent's patrol boat sunk!  #{@opponent.ships_left} more ships to go."
-					end
+			player_cell.hit
+			opponent_cell.ship.hit
+			opponent_cell.hit
+
+			if opponent_cell.ship.sunk?
+				@opponent.ships_left -= 1
+				puts "Opponent's #{opponent_cell.ship.class.to_s.downcase} sunk! #{@opponent.ships_left} more ships to go."
 			end
 		end
 	end
@@ -204,54 +185,20 @@ class Game
 		target[:row] = Board::ROW.rindex(target_coords[0])
 		target[:column] = Board::COLUMN.rindex(target_coords[1])
 
+		player_cell = @player.board.grid[target[:row]][target[:column]]
+
 		print "\nOpponent called \"#{target_coords[0]}#{target_coords[1]}\" "
 		if @player.board.grid[target[:row]][target[:column]].status == :open
 			puts "- MISS!\n\n"
 		else
 			puts "- HIT!"
-			case @player.board.grid[target[:row]][target[:column]].status
-				when :carrier
-					@player.carrier.hit
-					if @player.carrier.sunk?
-						@player.ships_left -= 1
-						puts "\nYour carrier has been sunk!"
-					else
-						puts "\nYour carrier has been hit!"
-					end
-				when :battleship
-					@player.battleship.hit
-					if @player.battleship.sunk?
-						@player.ships_left -= 1
-						puts "\nYour battleship has been sunk!"
-					else
-						puts "\nYour battleship has been hit!"
-					end
-				when :destroyer
-					@player.destroyer.hit
-					if @player.destroyer.sunk?
-						@player.ships_left -= 1
-						puts "\nYour destroyer has been sunk!"
-					else
-						puts "\nYour destroyer has been hit!"
-					end
-				when :submarine
-					@player.submarine.hit
-					if @player.submarine.sunk?
-						@player.ships_left -= 1
-						puts "\nYour submarine has been sunk!"
-					else
-						puts "\nYour submarine has been hit!"
-					end
-				when :patrol
-					@player.patrol.hit
-					if @player.patrol.sunk?
-						@player.ships_left -= 1
-						puts "\nYour patrol boat has been sunk!"
-					else
-						puts "\nYour patrol boat has been hit!"
-					end
+			player_cell.hit
+			player_cell.ship.hit
+			if player_cell.ship.sunk?
+				puts "\nYour #{player_cell.ship.class.to_s.downcase} has been sunk!"
+			else
+				puts "\nYour #{player_cell.ship.class.to_s.downcase} has been hit!"
 			end
-			@player.board.grid[target[:row]][target[:column]].hit
 		end
 		puts "-------------------------------------\n\n"
 	end
@@ -260,8 +207,9 @@ end
 
 if __FILE__ == $0
 	g = Game.new
+	g.play
 	# p = Player.new('David')
-	o = Player.new('Opponent')
-	g.deploy_opp_ship(o, :carrier)
-	puts o.board
+	# o = Player.new('Opponent')
+	# g.deploy_opp_ship(o, :carrier)
+	# puts o.board
 end
