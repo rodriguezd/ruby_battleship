@@ -12,16 +12,8 @@ class Game
 		set_player
 		set_opponent
 		puts "\nNow place your ships, #{@player.name}."
-		deploy_ship(@player, :carrier)
-		deploy_ship(@player, :battleship)
-		deploy_ship(@player, :destroyer)
-		deploy_ship(@player, :submarine)
-		deploy_ship(@player, :patrol_boat)
-		deploy_opp_ship(@opponent, :carrier)
-		deploy_opp_ship(@opponent, :battleship)
-		deploy_opp_ship(@opponent, :destroyer)
-		deploy_opp_ship(@opponent, :submarine)
-		deploy_opp_ship(@opponent, :patrol_boat)
+		FLEET.each {|ship| deploy_ship(@player, ship)}
+		FLEET.each {|ship| deploy_opp_ship(@opponent, ship)}
 		play_rounds
 	end
 
@@ -149,16 +141,17 @@ class Game
 			input = gets.chomp.rstrip.upcase
 			target[:row] = Board::ROW.rindex(input.split(//, 2)[0])
 			target[:column] = Board::COLUMN.rindex(input.split(//, 2)[1])
-			if !target[:row].nil? && !target[:column].nil?
-				 valid = true
-			else
+			player_cell = @player.target_board.grid[target[:row]][target[:column]]
+			if target[:row].nil? || target[:column].nil?
 				puts "Invalid coordinates."
+			elsif player_cell.status != :open
+				puts "Coordinates already called. Try again."
+			else
+				valid = true
 			end
 		end
 
-		player_cell = @player.target_board.grid[target[:row]][target[:column]]
 		opponent_cell = @opponent.board.grid[target[:row]][target[:column]]
-
 
 		if opponent_cell.status == :open
 			puts "\n\"MISS!\""
