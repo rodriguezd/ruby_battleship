@@ -77,8 +77,8 @@ class Game
 			valid = false
 			if player.board.valid_coordinates?(player.send(ship), position, orientation) &&
 				 player.board.check_clearance?(player.send(ship), position, orientation)
-					 player.board.place_ship(player.send(ship), position, orientation)
-					 valid = true
+				player.board.place_ship(player.send(ship), position, orientation)
+				valid = true
 			else
 				puts "Invalid position for ship."
 			end
@@ -141,16 +141,15 @@ class Game
 			input = gets.chomp.rstrip.upcase
 			target[:row] = Board::ROW.rindex(input.split(//, 2)[0])
 			target[:column] = Board::COLUMN.rindex(input.split(//, 2)[1])
-			player_cell = @player.target_board.grid[target[:row]][target[:column]]
 			if target[:row].nil? || target[:column].nil?
 				puts "Invalid coordinates."
-			elsif player_cell.status != :open
+			elsif @player.target_board.grid[target[:row]][target[:column]].status != :open
 				puts "Coordinates already called. Try again."
 			else
 				valid = true
 			end
 		end
-
+		player_cell = @player.target_board.grid[target[:row]][target[:column]]
 		opponent_cell = @opponent.board.grid[target[:row]][target[:column]]
 
 		if opponent_cell.status == :open
