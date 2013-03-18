@@ -22,9 +22,9 @@ class Board
 		def to_s
 			row_letter = ('A'..'Z').to_a
 			i = 0
-			puts "  1 2 3 4 5 6 7 8 9 10"
+			puts "  1 2 3 4 5 6 7 8 9 10".colorize(:green)
 			@grid.each do |row|
-				print row_letter[i] + ' '
+				print row_letter[i].colorize(:green) + ' '
 				row.each {|cell| print cell.to_s + ' '}
 				print "\n"
 				i += 1

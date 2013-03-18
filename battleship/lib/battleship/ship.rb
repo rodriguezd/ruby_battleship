@@ -15,7 +15,7 @@ class Ship
 	end
 
 	def to_s
-		@fill_char
+		@fill_char.colorize(:light_blue)
 	end
 
 end

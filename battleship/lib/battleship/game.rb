@@ -1,5 +1,6 @@
 require_relative 'player'
 require_relative 'board'
+require 'colorize'
 
 class Game
 
@@ -8,7 +9,7 @@ class Game
 	FLEET = [:carrier, :battleship, :destroyer, :submarine, :patrol_boat]
 
 	def play
-		puts "\nLet's play some Battleship!\n\n"
+		puts "\nLet's play some Battleship!\n\n".colorize(:light_red)
 		set_player
 		set_opponent
 		puts "\nNow place your ships, #{@player.name}."
@@ -55,7 +56,7 @@ class Game
 					orientation = :vertical
 					valid = true
 				else
-					puts "Invalid orientation entry."
+					puts "Invalid orientation entry.".colorize(:light_yellow)
 				end
 			end
 
@@ -69,7 +70,7 @@ class Game
 				if !position[:row].nil? && !position[:column].nil?
 					valid = true
 				else
-					puts "Invalid coordinates."
+					puts "Invalid coordinates.".colorize(:yellow)
 				end
 			end
 
@@ -80,7 +81,7 @@ class Game
 				player.board.place_ship(player.send(ship), position, orientation)
 				valid = true
 			else
-				puts "Invalid position for ship."
+				puts "Invalid position for ship.".colorize(:yellow)
 			end
 		end
 	end
@@ -129,7 +130,7 @@ class Game
 				game_over = true
 			end
 		end
-		puts "\n\n#{winner} WINS!\n\n"
+		puts "\n\n#{winner} WINS!\n\n".colorize(:light_blue)
 	end
 
 	#prompt player for shot coordinates, validate, assess hit or miss
@@ -142,9 +143,9 @@ class Game
 			target[:row] = Board::ROW.rindex(input.split(//, 2)[0])
 			target[:column] = Board::COLUMN.rindex(input.split(//, 2)[1])
 			if target[:row].nil? || target[:column].nil?
-				puts "Invalid coordinates."
+				puts "Invalid coordinates.".colorize(:yellow)
 			elsif @player.target_board.grid[target[:row]][target[:column]].status != :open
-				puts "Coordinates already called. Try again."
+				puts "Coordinates already called. Try again.".colorize(:yellow)
 			else
 				valid = true
 			end
@@ -153,17 +154,17 @@ class Game
 		opponent_cell = @opponent.board.grid[target[:row]][target[:column]]
 
 		if opponent_cell.status == :open
-			puts "\n\"MISS!\""
+			puts "\n\"MISS!\"".colorize(:yellow)
 			player_cell.miss
 		else
-			puts "\n\"HIT!\""
+			puts "\n\"HIT!\"".colorize(:light_red)
 			player_cell.hit
 			opponent_cell.ship.hit
 			opponent_cell.hit
 
 			if opponent_cell.ship.sunk?
 				@opponent.ships_left -= 1
-				puts "Opponent's #{opponent_cell.ship.class.to_s.downcase} sunk! #{@opponent.ships_left} more ships to go."
+				puts "Opponent's #{opponent_cell.ship.class.to_s.downcase} sunk! #{@opponent.ships_left} more ships to go.".colorize(:light_red)
 			end
 		end
 	end
@@ -181,15 +182,15 @@ class Game
 
 		print "\nOpponent called \"#{target_coords[0]}#{target_coords[1]}\" "
 		if @player.board.grid[target[:row]][target[:column]].status == :open
-			puts "- MISS!\n\n"
+			puts "- MISS!\n\n".colorize(:yellow)
 		else
-			puts "- HIT!"
+			puts "- HIT!".colorize(:light_red)
 			player_cell.hit
 			player_cell.ship.hit
 			if player_cell.ship.sunk?
-				puts "\nYour #{player_cell.ship.class.to_s.downcase} has been sunk!"
+				puts "\nYour #{player_cell.ship.class.to_s.downcase} has been sunk!".colorize(:light_red)
 			else
-				puts "\nYour #{player_cell.ship.class.to_s.downcase} has been hit!"
+				puts "\nYour #{player_cell.ship.class.to_s.downcase} has been hit!".colorize(:light_red)
 			end
 		end
 		puts "-------------------------------------\n\n"

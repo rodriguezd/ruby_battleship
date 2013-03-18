@@ -15,6 +15,10 @@ class GridCell
 	def to_s
 		if @ship && @status != :hit
 			@ship.to_s
+		elsif @status == :hit
+			FILL_CHAR[@status].colorize(:light_red)
+		elsif @status == :miss
+			FILL_CHAR[@status].colorize(:yellow)
 		else
 			FILL_CHAR[@status]
 		end
