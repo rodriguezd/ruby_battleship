@@ -2,8 +2,6 @@ require_relative 'ship'
 
 class Carrier < Ship
 
-	attr_accessor :length, :fill_char
-
 	def initialize
 		@length = 5
   	@fill_char = 'C'

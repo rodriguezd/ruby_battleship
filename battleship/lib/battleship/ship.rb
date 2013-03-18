@@ -1,6 +1,6 @@
 class Ship
 
-	attr_accessor :length, :hits, :fill_char
+	attr_reader :length, :hits, :fill_char
 
 	def initialize
 		@hits = 0
