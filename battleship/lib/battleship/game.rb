@@ -13,8 +13,8 @@ class Game
 		set_player
 		set_opponent
 		puts "\nNow place your ships, #{@player.name}."
-		FLEET.each {|ship| deploy_ship(@player, ship)}
-		FLEET.each {|ship| deploy_opp_ship(@opponent, ship)}
+		FLEET.each {|ship| deploy_ship(@player, @player.send(ship))}
+		FLEET.each {|ship| deploy_opp_ship(@opponent, @opponent.send(ship))}
 		play_rounds
 	end
 
@@ -47,7 +47,7 @@ class Game
 			player.board.to_s			#print board for reference
 			position = {}
 			while valid == false do
-				print "\n#{ship.capitalize} orientation: horizontal(H) or vertical(V)? "
+				print "\n#{ship.class} orientation: horizontal(H) or vertical(V)? "
 				input = gets.chomp.rstrip.upcase
 				if input == 'H' || input == 'HORIZONTAL'
 					orientation = :horizontal
@@ -63,7 +63,7 @@ class Game
 			#prompt for placement starting position and validate input
 			valid = false
 			while valid == false do
-				print "\n#{ship.capitalize} starting position (Ex. A10): "
+				print "\n#{ship.class} starting position (Ex. A10): "
 				input = gets.chomp.rstrip.upcase
 				position[:row] = Board::ROW.rindex(input.split(//, 2)[0])
 				position[:column] = Board::COLUMN.rindex(input.split(//, 2)[1])
@@ -76,9 +76,9 @@ class Game
 
 			#validate board clearances for given orientation and position
 			valid = false
-			if player.board.valid_coordinates?(player.send(ship), position, orientation) &&
-				 player.board.check_clearance?(player.send(ship), position, orientation)
-				player.board.place_ship(player.send(ship), position, orientation)
+			if player.board.valid_coordinates?(ship, position, orientation) &&
+				 player.board.check_clearance?(ship, position, orientation)
+				player.board.place_ship(ship, position, orientation)
 				valid = true
 			else
 				puts "Invalid position for ship.".colorize(:yellow)
@@ -94,19 +94,19 @@ class Game
 			orientation = [:horizontal, :vertical].sample
 			if orientation == :horizontal
 				rows = Board::ROW
-				columns = Board::COLUMN[0..9 - opponent.send(ship).length]
+				columns = Board::COLUMN[0..9 - ship.length]
 			else
-				rows = Board::ROW[0..9 - opponent.send(ship).length]
+				rows = Board::ROW[0..9 - ship.length]
 				columns = Board::COLUMN
 			end
 
 			position[:row] = Board::ROW.rindex(rows.sample)
 			position[:column] = Board::COLUMN.rindex(columns.sample)
 
-			if opponent.board.valid_coordinates?(opponent.send(ship), position, orientation) &&
-				 opponent.board.check_clearance?(opponent.send(ship), position, orientation)
+			if opponent.board.valid_coordinates?(ship, position, orientation) &&
+				 opponent.board.check_clearance?(ship, position, orientation)
 				 valid = true
-				 opponent.board.place_ship(opponent.send(ship), position, orientation)
+				 opponent.board.place_ship(ship, position, orientation)
 			end
 		end
 	end
