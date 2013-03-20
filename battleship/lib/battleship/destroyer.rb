@@ -7,5 +7,4 @@ class Destroyer < Ship
   	@fill_char = 'D'
   	super
 	end
-
 end

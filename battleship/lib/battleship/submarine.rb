@@ -7,5 +7,4 @@ class Submarine < Ship
   	@fill_char = 'S'
   	super
 	end
-
 end

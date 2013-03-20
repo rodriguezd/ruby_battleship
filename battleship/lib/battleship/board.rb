@@ -18,7 +18,6 @@ class Board
 		@grid = Array.new(BOARD_DIM).map! {Array.new(BOARD_DIM).map! {GridCell.new}}
 	end
 
-		#print board grid
 		def to_s
 			row_letter = ('A'..'Z').to_a
 			i = 0
@@ -71,39 +70,4 @@ class Board
 		end
 		return true
 	end
-
-	# method currently not used
-	# def hit_or_miss(cell)
-	# 	if @grid[cell[:row], cell[:column]].status == :open
-	# 	   return :miss
-	# 	 elsif @grid[cell[:row], cell[:column]].status == :hit ||
-	# 	 	   @grid[cell[:row], cell[:column]].status == :miss
-	# 	 	   return :called
-	# 	 else
-	# 	 	@grid[cell[:row], cell[:column]].status = :hit
-	# 	 	return :hit
-	# 	 end
-	# end
-
-end
-
-if __FILE__ == $0
-	board = Board.new
-	a = Carrier.new
-	b = Battleship.new
-	c = Destroyer.new
-	d = Submarine.new
-	e = PatrolBoat.new
-
-	puts a.send(:length)
-
-	# puts board.valid_coordinates?(a, {row: 6, column: 7}, :vertical)
-
-	# board.place_ship(a, {row: 2, column: 4}, :vertical)
-	# puts board.check_clearance?(b, {row: 2, column: 4}, :horizontal)
-	# board.place_ship(b, {row: 3, column: 4}, :horizontal)
-	# board.place_ship(c, {row: 4, column: 4}, :horizontal)
-	# board.place_ship(d, {row: 5, column: 4}, :horizontal)
-	# board.place_ship(e, {row: 6, column: 4}, :horizontal)
-	# puts board
 end

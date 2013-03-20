@@ -43,10 +43,4 @@ class Player
 			row_number += 1
 		end
 	end
-
-end
-
-if __FILE__ == $0
-	p = Player.new('David')
-	p.print_boards
 end

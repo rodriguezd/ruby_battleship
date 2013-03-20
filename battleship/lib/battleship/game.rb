@@ -13,8 +13,8 @@ class Game
 		set_player
 		set_opponent
 		puts "\nNow place your ships, #{@player.name}."
-		FLEET.each {|ship| deploy_ship(@player, @player.send(ship))}
-		FLEET.each {|ship| deploy_opp_ship(@opponent, @opponent.send(ship))}
+		FLEET.each {|ship| deploy_ship(@player, ship)}
+		FLEET.each {|ship| deploy_opp_ship(@opponent, ship)}
 		play_rounds
 	end
 
@@ -40,14 +40,13 @@ class Game
 
 	def deploy_ship(player, ship)
 
-		#prompt for placement orientation and validate input
 		valid = false
 		while valid == false do
 			print "\n"
 			player.board.to_s			#print board for reference
 			position = {}
 			while valid == false do
-				print "\n#{ship.class} orientation: horizontal(H) or vertical(V)? "
+				print "\n#{ship.capitalize} orientation: horizontal(H) or vertical(V)? "
 				input = gets.chomp.rstrip.upcase
 				if input == 'H' || input == 'HORIZONTAL'
 					orientation = :horizontal
@@ -60,10 +59,9 @@ class Game
 				end
 			end
 
-			#prompt for placement starting position and validate input
 			valid = false
 			while valid == false do
-				print "\n#{ship.class} starting position (Ex. A10): "
+				print "\n#{ship.capitalize} starting position (Ex. A10): "
 				input = gets.chomp.rstrip.upcase
 				position[:row] = Board::ROW.rindex(input.split(//, 2)[0])
 				position[:column] = Board::COLUMN.rindex(input.split(//, 2)[1])
@@ -74,11 +72,10 @@ class Game
 				end
 			end
 
-			#validate board clearances for given orientation and position
 			valid = false
-			if player.board.valid_coordinates?(ship, position, orientation) &&
-				 player.board.check_clearance?(ship, position, orientation)
-				player.board.place_ship(ship, position, orientation)
+			if player.board.valid_coordinates?(player.send(ship), position, orientation) &&
+				 player.board.check_clearance?(player.send(ship), position, orientation)
+				player.board.place_ship(player.send(ship), position, orientation)
 				valid = true
 			else
 				puts "Invalid position for ship.".colorize(:yellow)
@@ -94,29 +91,29 @@ class Game
 			orientation = [:horizontal, :vertical].sample
 			if orientation == :horizontal
 				rows = Board::ROW
-				columns = Board::COLUMN[0..9 - ship.length]
+				columns = Board::COLUMN[0..9 - opponent.send(ship).length]
 			else
-				rows = Board::ROW[0..9 - ship.length]
+				rows = Board::ROW[0..9 - opponent.send(ship).length]
 				columns = Board::COLUMN
 			end
 
 			position[:row] = Board::ROW.rindex(rows.sample)
 			position[:column] = Board::COLUMN.rindex(columns.sample)
 
-			if opponent.board.valid_coordinates?(ship, position, orientation) &&
-				 opponent.board.check_clearance?(ship, position, orientation)
+			if opponent.board.valid_coordinates?(opponent.send(ship), position, orientation) &&
+				 opponent.board.check_clearance?(opponent.send(ship), position, orientation)
 				 valid = true
-				 opponent.board.place_ship(ship, position, orientation)
+				 opponent.board.place_ship(opponent.send(ship), position, orientation)
 			end
 		end
 	end
 
-	#alternate rounds between player and opponent, determine if game won
 	def play_rounds
 		puts "\n\nTime to sink some ships! Good luck, #{@player.name}\n\n"
 		game_over = false
 		while game_over == false
 			@player.print_boards
+
 			player_round
 			if @opponent.ships_left == 0
 				winner = @player.name
@@ -133,7 +130,6 @@ class Game
 		puts "\n\n#{winner} WINS!\n\n".colorize(:light_blue)
 	end
 
-	#prompt player for shot coordinates, validate, assess hit or miss
 	def player_round
 		target = {}
 		valid = false
@@ -169,7 +165,6 @@ class Game
 		end
 	end
 
-	#opponent takes shot from queue, assess hit or miss
 	def opponent_round
 		puts "\n---------- Opponent's turn ----------"
 		target_coords = opp_targeting_queue.pop
@@ -195,14 +190,4 @@ class Game
 		end
 		puts "-------------------------------------\n\n"
 	end
-
-end
-
-if __FILE__ == $0
-	g = Game.new
-	g.play
-	# p = Player.new('David')
-	# o = Player.new('Opponent')
-	# g.deploy_opp_ship(o, :carrier)
-	# puts o.board
 end

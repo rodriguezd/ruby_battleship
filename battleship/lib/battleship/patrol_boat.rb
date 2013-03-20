@@ -7,5 +7,4 @@ class PatrolBoat < Ship
   	@fill_char = 'P'
   	super
 	end
-
 end

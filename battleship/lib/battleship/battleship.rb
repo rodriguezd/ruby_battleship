@@ -7,5 +7,4 @@ class Battleship < Ship
   	@fill_char = 'B'
   	super
 	end
-
 end

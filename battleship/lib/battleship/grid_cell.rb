@@ -2,7 +2,6 @@ class GridCell
 
 	attr_accessor :status, :ship
 
-	#cell fill characters
 	FILL_CHAR = {:open => '+',
 			   			 :hit => 'X',
 			   			 :miss => '0'}
@@ -31,12 +30,4 @@ class GridCell
 	def miss
 		@status = :miss
 	end
-
-end
-
-if __FILE__ == $0
-	require_relative 'carrier'
-	s = Carrier.new
-	a = GridCell.new
-	puts a
 end
